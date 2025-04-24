@@ -1,8 +1,10 @@
 package jp.co.metateam.library.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,13 +12,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
+import jp.co.metateam.library.model.Account;
+import jp.co.metateam.library.model.AccountDto;
 import jp.co.metateam.library.model.BookMst;
 import jp.co.metateam.library.model.BookMstDto;
 import jp.co.metateam.library.service.BookMstService;
 import lombok.extern.log4j.Log4j2;
+
+//バリデーションチェック自作
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+//import javax.validation.Valid;
+
 
 /**
  * 書籍関連クラス
@@ -50,5 +62,73 @@ public class BookController {
 
         return "book/add";
     }
+
+    //みくさん流
+   
+    // public String addplus(@Valid @ModelAttribute BookMstDto bookMstDto, BindingResult result, RedirectAttributes ra, Model model) {
+    //     try {
+
+    //         boolean errorFlg = bookMstService.checkbook(bookMstDto,model);
+    //         if (errorFlg == false){
+    //             bookMstService.save(bookMstDto);
+    //             return "book/index";  
+    //         }
+    //         return "book/add";
+
+
+    //     } catch (Exception e) {
+    //         log.error(e.getMessage());
+
+    //         //ra.addFlashAttribute("accountDto", accountDto);
+    //         ra.addFlashAttribute("org.springframework.validation.BindingResult.accountDto", result);
+
+    //         return "redirect:book/add";
+    //     }
+    // }
+
+//もりりゅー流
+@PostMapping("/book/add")
+    public String createBook(@ModelAttribute("bookMstDto") BookMstDto bookMstDto,BindingResult result, Model model) {
+           
+                boolean checkResult = bookMstService.checkbook(bookMstDto,model);
+                           //画面変更します
+                if (checkResult) {
+                    return "book/add"; // バリデーションエラー時、登録画面に戻す
+                }
+                boolean checkIsbnResult = bookMstService.checkIsbnEntry(bookMstDto,model);
+                if(checkIsbnResult ){
+                    return "book/add"; // バリデーションエラー時、登録画面に戻す
+                }
+               
+                // 登録処理
+                bookMstService.save(bookMstDto);
+                return "redirect:/book/index"; // 正常登録後、一覧に戻る
+       
+        }
+
+//バリデーションチェック自作
+
+    // @PostMapping("/register")
+//    public String createBook(@ModelAttribute BookMstDto bookMstDto, Model model) {
+//        // List<String> validationErrors = bookMstService.checkbook(bookMstDto,model);
+//        List<String> validationErrors = new ArrayList<>();
+
+//        bookMstService.checkbook(bookMstDto,model);
+        // バリデーションエラーがあれば、エラーメッセージをモデルに追加
+//        if (!validationErrors.isEmpty()) {
+//            model.addAttribute("titleErrors", validationErrors);
+//            return "book/register"; // エラーメッセージを表示するためのHTMLページに遷移
+//        }
+        
+        // エラーがなければ書籍登録の処理（例：保存処理）
+       // エラーがなければ、データベースに保存
+        
+//        this.bookMstService.save(bookMstDto);
+//        return "redirect:/success"; // 成功した場合のリダイレクト
+        
+//    }
+
+
+    
     
 }
