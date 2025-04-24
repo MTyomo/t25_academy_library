@@ -15,7 +15,49 @@
             <div class="inner_contens">
                 <div class="page_title">書籍登録</div>
                 <div class="page_contents">
+                    <td>*は必須項目です
+                    </td>    
+                    
                     <form id="book_register_form" th:object="${bookMstDto}" th:action="@{/book/add}" method="post">
+                        <form id="add_form" th:action="@{/book/add}" method="post">
+                            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                           
+                            <table>
+                                <caption></caption>
+                                <tbody>
+                                    <tr>
+                                        <th scope="col">書籍名:</th>
+                                        <td><input type="text" name="title" placeholder="書籍名を入力" th:field="*{title}" /></td>
+                                         <!-- エラーメッセージがある場合は表示 -->
+                                            <div th:if="${titleErrors}">
+                                                <ul>
+                                                <div th:each= "error : ${titleErrors}">
+                                                     <p th:text="${error}" style ="color: red; font-weight: bold;" ></p>
+                                                </div>
+                                                </ul>
+                                            </div>
+                                    </tr>
+                                    <tr>
+                                        <th scope="col">ISBN: </th>
+                                        <td><input name="isbn" placeholder="ISBNを入力" th:field="*{isbn}" /></td>
+                                        <!--エラーメッセージがある場合は表示-->
+                                            <div th:if="${isbnErrors}">
+                                                <ul>
+                                                <div th:each= "error : ${isbnErrors}">
+                                                    <p th:text="${error}" style ="color: red; font-weight: bold;" ></p>
+                                                </div>
+                                                </ul>
+                                            </div>
+                                            <!--div class="error_msg" th:if="${IsbnErrors}">
+                                            <div th:each="msg : ${IsbnErrors}">
+                                                <p th:text = "${msg}" style="color : red"></p>
+                                            </div>
+                                        </div>-->
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button type="submit">保存</button>
+                        </form>
                         <div class="mb30 flexarea">
                             <span>
                                 <a th:href="@{/book/index}" class="link">← 一覧へ戻る</a>
@@ -27,4 +69,5 @@
         </div>
     </div>
     <div th:replace="~{common :: footer}"></div>
+
 </body>
