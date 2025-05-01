@@ -62,29 +62,6 @@ public class BookController {
         return "book/add";
     }
 
-    // みくさん流
-
-    // public String addplus(@Valid @ModelAttribute BookMstDto bookMstDto,
-    // BindingResult result, RedirectAttributes ra, Model model) {
-    // try {
-
-    // boolean errorFlg = bookMstService.checkbook(bookMstDto,model);
-    // if (errorFlg == false){
-    // bookMstService.save(bookMstDto);
-    // return "book/index";
-    // }
-    // return "book/add";
-
-    // } catch (Exception e) {
-    // log.error(e.getMessage());
-
-    // //ra.addFlashAttribute("accountDto", accountDto);
-    // ra.addFlashAttribute("org.springframework.validation.BindingResult.accountDto",
-    // result);
-
-    // return "redirect:book/add";
-    // }
-    // }
 
     // もりりゅー流
     @PostMapping("/book/add")
@@ -106,28 +83,5 @@ public class BookController {
 
     }
 
-    // バリデーションチェック自作
-
-    // @PostMapping("/register")
-    // public String createBook(@ModelAttribute BookMstDto bookMstDto, Model model)
-    // {
-    // // List<String> validationErrors =
-    // bookMstService.checkbook(bookMstDto,model);
-    // List<String> validationErrors = new ArrayList<>();
-
-    // bookMstService.checkbook(bookMstDto,model);
-    // バリデーションエラーがあれば、エラーメッセージをモデルに追加
-    // if (!validationErrors.isEmpty()) {
-    // model.addAttribute("titleErrors", validationErrors);
-    // return "book/register"; // エラーメッセージを表示するためのHTMLページに遷移
-    // }
-
-    // エラーがなければ書籍登録の処理（例：保存処理）
-    // エラーがなければ、データベースに保存
-
-    // this.bookMstService.save(bookMstDto);
-    // return "redirect:/success"; // 成功した場合のリダイレクト
-
-    // }
 
 }

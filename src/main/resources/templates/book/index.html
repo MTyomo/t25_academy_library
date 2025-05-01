@@ -8,29 +8,40 @@
 </head>
 
 <body>
+    <style>
+        .btn_block {
+            text-align: right;
+            padding-right: 80px;
+            /* 右側に80pxの余白を追加 */
+            margin-top: 20px;
+            /*上側の余白*/
+            margin-bottom: 30px;
+        }
+        .book_table th {
+            background-color: #f0f0f0; /* 薄いグレー */
+            padding: 10px;
+            text-align: left; /* 左揃え */
+        }
+        .book_table td {
+            padding: 10px;
+            text-align: left; /* 左揃え */
+        }
+    </style>
     <div class="contents">
         <div th:replace="~{common :: main_sidebar}"></div>
         <div class="main_contents">
             <div th:replace="~{common :: header}"></div>
             <div class="inner_contens">
                 <div class="page_title">書籍一覧</div>
-            </div>
-            <style>
-                .btn_block {
-                    text-align: right;
-                    padding-right: 80px;
-                    /* 右側に80pxの余白を追加 */
-                    margin-top: 20px;
-                    /*上側の余白*/
-                }
-            </style>
-            <div class="btn_block">
-                <div style = "text-align: right;">
-                    <form th:action="@{/book/add}" method="get"style="display: inline-block;">
-                        <input type="submit" value="+書籍登録" style="padding: 12px 24px; font-size: 16px; background-color: #87f4b4fa;border: 1px solid #87f4b4fa;">
-                    </form>
-            </div>
-            <table class="book_table" border="1" style="margin: 0 auto;">
+                <div class="btn_block">
+                    <div style = "text-align: right;">
+                        <form th:action="@{/book/add}" method="get"style="display: inline-block;">
+                            <input type="submit" value="➕📚 書籍登録" style="padding: 12px 24px; font-size: 16px; background-color: #87f4b4fa;border: 1px solid #87f4b4fa;">
+                        </form>
+                    </div>
+                </div>
+            
+            <table class="book_table" border="1" style="margin-left: 80px;">
                 <thead>
                     <tr>
                         <th>書籍名</th>
@@ -44,7 +55,7 @@
                     </tr>
                 </tbody>
             </table>
+            <div th:replace="~{common :: footer}"></div>
         </div>
     </div>
-    <div th:replace="~{common :: footer}"></div>
 </body>
