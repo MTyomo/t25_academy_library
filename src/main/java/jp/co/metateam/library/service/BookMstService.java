@@ -114,6 +114,7 @@ public class BookMstService {
         if (!isbn.matches("^[0-9]+$")) {
             validationIsbnErrors.add("ISBNは半角数字で入力してください");
             model.addAttribute("isbnErrors", validationIsbnErrors);
+            return true;
         }
 
         if (!bookMst.isEmpty()) {
