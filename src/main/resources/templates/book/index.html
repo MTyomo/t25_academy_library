@@ -8,25 +8,6 @@
 </head>
 
 <body>
-    <style>
-        .btn_block {
-            text-align: right;
-            padding-right: 80px;
-            /* 右側に80pxの余白を追加 */
-            margin-top: 20px;
-            /*上側の余白*/
-            margin-bottom: 30px;
-        }
-        .book_table th {
-            background-color: #f0f0f0; /* 薄いグレー */
-            padding: 10px;
-            text-align: left; /* 左揃え */
-        }
-        .book_table td {
-            padding: 10px;
-            text-align: left; /* 左揃え */
-        }
-    </style>
     <div class="contents">
         <div th:replace="~{common :: main_sidebar}"></div>
         <div class="main_contents">
@@ -50,7 +31,9 @@
                 </thead>
                 <tbody>
                     <tr th:each="book : ${bookMstList}">
-                        <td th:text="${book.title}"></td>
+                        <td>
+                            <div class="wrap-title" th:text="${book.title}"></div>
+                        </td>
                         <td th:text="${book.isbn}"></td>
                     </tr>
                 </tbody>
