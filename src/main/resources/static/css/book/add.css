@@ -38,3 +38,56 @@
   cursor: pointer;
   opacity: 0.6;
 }
+
+.required-info {
+  color: red;
+  /* 赤文字 */
+  font-weight: bold;
+}
+
+.back-link {
+  position: absolute;
+  top: 200px;
+  /* ヘッダーの高さ分だけ余白を追加 */
+  right: 40px;
+  /* 右上に配置 */
+}
+
+.form-group {
+  margin-bottom: 20px;
+  /* 各入力項目間の余白 */
+}
+
+label {
+  display: block;
+  /* ラベルをブロック要素として表示 */
+  margin-bottom: 8px;
+  /* ラベルと入力欄の間に少し余白 */
+}
+
+input {
+  width: 100%;
+  /* 入力欄の幅を100%にして、フォームの幅いっぱいに表示 */
+  padding: 8px;
+  /* 入力欄の内部余白 */
+  border: 1px solid #ccc;
+  /* 入力欄の境界線 */
+  font-size: 14px;
+}
+
+.label-error-row {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* ラベルとエラーメッセージの間の余白 */
+}
+
+.inline-error {
+  display: flex;
+  flex-direction: column;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  font-size: 16px; /* ← ここで文字サイズを指定 */
+}

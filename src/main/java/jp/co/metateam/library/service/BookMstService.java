@@ -23,12 +23,12 @@ import jp.co.metateam.library.repository.BookMstRepository;
 public class BookMstService {
 
     private final BookMstRepository bookMstRepository;
-    
+
     @Autowired
-    public BookMstService(BookMstRepository bookMstRepository){
+    public BookMstService(BookMstRepository bookMstRepository) {
         this.bookMstRepository = bookMstRepository;
     }
-    
+
     public List<BookMstDto> findAvailableWithStockCount() {
         List<BookMst> books = this.bookMstRepository.findLimitedBook();
         List<BookMstDto> bookMstDtoList = new ArrayList<BookMstDto>();
@@ -55,9 +55,10 @@ public class BookMstService {
 
             bookMst.setTitle(bookMstDto.getTitle());
             bookMst.setIsbn(bookMstDto.getIsbn());
-            //bookMst.setId(bookMstDto.getId());
-            //bookMst.setDeletedAt(this.bookMstRepository.encode(bookMstDto.getDeletedAt())); // パスワードをハッシュ化してから保存
-            //bookMst.setEmail(bookMstDto.getEmail());
+            // bookMst.setId(bookMstDto.getId());
+            // bookMst.setDeletedAt(this.bookMstRepository.encode(bookMstDto.getDeletedAt()));
+            // // パスワードをハッシュ化してから保存
+            // bookMst.setEmail(bookMstDto.getEmail());
 
             // データベースへの保存
             this.bookMstRepository.save(bookMst);
@@ -65,60 +66,65 @@ public class BookMstService {
             throw e;
         }
     }
-   
-    @PostMapping  
 
+    @PostMapping
 
-    
-    public boolean checkbook (BookMstDto bookMstDto,Model model ){
-       //データ格納先の定義と、エラー格納先の定義
+    // バリデーションチェック
+    public boolean checkbook(BookMstDto bookMstDto, Model model) {
         String Title = bookMstDto.getTitle();
-        String isbn = bookMstDto.getIsbn();
         List<String> validationTitleErrors = new ArrayList<String>();
-        List<String> validationIsbnErrors = new ArrayList<String>();
 
         // 1. 書籍名のバリデーションチェックをする
         if (StringUtils.isEmpty(Title)) {
             validationTitleErrors.add("書籍名は必須です。");
-            model.addAttribute("titleErrors",validationTitleErrors);
+            model.addAttribute("titleErrors", validationTitleErrors);
 
-        } else  if (Title.length() > 255 ) {
+        } else if (Title.length() > 255) {
             validationTitleErrors.add("書籍名は255文字以内で入力してください");
-            model.addAttribute("titleErrors",validationTitleErrors);
+            model.addAttribute("titleErrors", validationTitleErrors);
         }
+
+        if (!validationTitleErrors.isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
+    public Boolean checkIsbnEntry(BookMstDto bookMstDto, Model model) {
+
+        //String getIsbn = bookMstDto.getIsbn();
+        //List<String> errIsbnList = new ArrayList<>();
+
+         String isbn = bookMstDto.getIsbn();
+         List<String> validationIsbnErrors = new ArrayList<String>();
+         List<BookMst> bookMst = this.bookMstRepository.selectByIsbn(isbn);
 
         // 2. ISBNのバリデーションチェックを行うよ
         if (StringUtils.isEmpty(isbn)) {
             validationIsbnErrors.add("ISBNは必須です。");
-            model.addAttribute("isbnErrors",validationIsbnErrors);
-        }else if (isbn.length() != 13 ) {
+            model.addAttribute("isbnErrors", validationIsbnErrors);
+            return true;
+        } 
+        
+        if (isbn.length() != 13) {
             validationIsbnErrors.add("ISBNは13文字で入力してください");
-            model.addAttribute("isbnErrors",validationIsbnErrors);
-        }
-        // 3. 文字種チェック（半角数字のみ）
+            model.addAttribute("isbnErrors", validationIsbnErrors);
+       }
+
         if (!isbn.matches("^[0-9]+$")) {
             validationIsbnErrors.add("ISBNは半角数字で入力してください");
             model.addAttribute("isbnErrors", validationIsbnErrors);
+            return true;
+        }
+
+        if (!bookMst.isEmpty()) {
+            validationIsbnErrors.add("登録されているISBNです");
+            model.addAttribute("isbnErrors",validationIsbnErrors);
+        } 
+           
+        if (!validationIsbnErrors.isEmpty()) {
+            return true;
+        }
+        return false;
     }
-    if (!validationTitleErrors.isEmpty() || !validationIsbnErrors.isEmpty()) {
-        return true;
-     }    
-     return false;
-    }
-
-     public Boolean checkIsbnEntry(BookMstDto bookMstDto,Model model) {
-
-      String getIsbn = bookMstDto.getIsbn();
-       List<String>errIsbnList = new ArrayList<>() ;
-       List<BookMst> bookMst  = this.bookMstRepository.selectByIsbn(getIsbn);
-
-       if (!bookMst.isEmpty()) {
-           errIsbnList.add("登録されているISBNです");
-           model.addAttribute("isbnErrors", errIsbnList);
-           return true;}
-       return false;
-   }
 }
-
-
-

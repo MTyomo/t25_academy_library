@@ -63,3 +63,37 @@
   color: #0000EE;
 }
 
+.btn_block {
+  text-align: right;
+  padding-right: 80px;
+  /* 右側に80pxの余白を追加 */
+  margin-top: 20px;
+  /*上側の余白*/
+  margin-bottom: 30px;
+}
+.book_table th {
+  background-color: #f0f0f0; /* 薄いグレー */
+  padding: 10px;
+  text-align: left; /* 左揃え */
+}
+.book_table td {
+  padding: 10px;
+  text-align: left; /* 左揃え */
+}
+
+/* 折り返し機能 */
+.wrap-title {
+  max-width: 600px;        /* 表示幅の制限（任意） */
+  white-space: normal;     /* 折り返しを許可 */
+  word-break: break-word;  /* 単語の途中でも折り返し */
+  padding: 5px;
+  /* border: 1px solid #ddd;  任意：見た目の補助 */
+}
+
+.table_title {
+  font-size: 20px;        /* フォントサイズ */
+  /* font-weight: bold;      太字 */
+  margin-bottom: 20px;    /* 下にスペース */
+  margin-left: 80px; 
+  color: #B9B9B9;            /* 文字色 */
+}
