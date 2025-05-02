@@ -75,9 +75,19 @@ input {
   font-size: 14px;
 }
 
-.required-info {
+.label-error-row {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* ラベルとエラーメッセージの間の余白 */
+}
+
+.inline-error {
+  display: flex;
+  flex-direction: column;
+}
+
+.error-message {
   color: red;
-  /* 赤文字 */
   font-weight: bold;
-  /* 太字 */
+  font-size: 16px; /* ← ここで文字サイズを指定 */
 }

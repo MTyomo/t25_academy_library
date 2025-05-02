@@ -24,41 +24,40 @@
                     <form id="book_register_form" th:object="${bookMstDto}" th:action="@{/book/add}" method="post">
                         <form id="add_form" th:action="@{/book/add}" method="post">
                             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-
+                            
+                            <!-- 書籍名ラベル＆エラー表示 -->
                             <div class="form-group">
-                                <div class="label-error-row">
-                                    <label for="title">
-                                        書籍名<span class="required-info">*</span> <!-- *のみ赤色 -->
-                                    </label>
-                                    <div th:if="${titleErrors}">
-                                        <ul>
-                                            <div th:each="error : ${titleErrors}">
-                                                <p th:text="${error}" style="color: red; font-weight: bold;"></p>
-                                            </div>
-                                        </ul>
+                                <div class="form-group">
+                                    <div class="label-error-row">
+                                        <label for="title">書籍名<span class="required-info">*</span></label>
+                                        <div class="inline-error" th:if="${titleErrors}">
+                                            <span th:each="error : ${titleErrors}" th:text="${error}"
+                                                class="error-message"></span>
+                                        </div>
                                     </div>
+                                    
                                     <input type="text" id="title" name="title" placeholder="書籍名を入力"
                                         th:field="*{title}" />
                                 </div>
-
+                                
+                                <!-- ISBN＆エラー表示 -->
                                 <div class="form-group">
-                                    <div class="label-error-row">
-                                    <label for="isbn">
-                                        ISBN<span class="required-info">*</span> <!-- *のみ赤色 -->
-                                    </label>
-                                    <div th:if="${isbnErrors}">
-                                        <ul>
-                                            <div th:each="error : ${isbnErrors}">
-                                                <p th:text="${error}" style="color: red; font-weight: bold;"></p>
+                                    <div class="form-group">
+                                        <div class="label-error-row">
+                                            <label for="isbn">ISBN<span class="required-info">*</span></label>
+                                            <div class="inline-error" th:if="${isbnErrors}">
+                                                <span th:each="error : ${isbnErrors}" th:text="${error}"
+                                                    class="error-message"></span>
                                             </div>
-                                        </ul>
-                                    </div>
-                                    <input type="text" id="isbn" name="isbn" placeholder="ISBNを入力" th:field="*{isbn}" />
-                                </div>
+                                        </div>
 
-                                <div class="btn_block">
-                                    <button type="submit" id="submit_btn">保存</button>
-                                </div>
+                                        <input type="text" id="isbn" name="isbn" placeholder="ISBNを入力"
+                                            th:field="*{isbn}" />
+                                    </div>
+
+                                    <div class="btn_block">
+                                        <button type="submit" id="submit_btn">保存</button>
+                                    </div>
                         </form>
                     </form>
                 </div>

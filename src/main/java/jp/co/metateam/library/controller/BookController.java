@@ -68,12 +68,10 @@ public class BookController {
     public String createBook(@ModelAttribute("bookMstDto") BookMstDto bookMstDto, BindingResult result, Model model) {
 
         boolean checkResult = bookMstService.checkbook(bookMstDto, model);
-        // 画面変更します
-        if (checkResult) {
-            return "book/add"; // バリデーションエラー時、登録画面に戻す
-        }
         boolean checkIsbnResult = bookMstService.checkIsbnEntry(bookMstDto, model);
-        if (checkIsbnResult) {
+
+        // 画面変更します
+        if (checkResult||checkIsbnResult) {
             return "book/add"; // バリデーションエラー時、登録画面に戻す
         }
 
