@@ -90,7 +90,7 @@ public class BookController {
         }
 
         // 取得した書籍データを model にセット
-        model.addAttribute("title", "書籍編集");
+        // model.addAttribute("title", "書籍編集");
         model.addAttribute("bookMstDto", book); // 編集する書籍データを渡す
         return "book/edit"; // edit.html を表示
     }
@@ -114,7 +114,7 @@ public class BookController {
         // ✅ 変更点がない場合、ポップアップ用のメッセージを渡して編集画面に戻る
         if (!isTitleChanged && !isIsbnChanged) {
             model.addAttribute("noChangeMessage", "変更点はありません");
-            model.addAttribute("bookMstDto", bookMstDto);
+            // model.addAttribute("bookMstDto", bookMstDto);
             return "book/edit";
         }
 
