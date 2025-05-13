@@ -14,32 +14,66 @@
             <div th:replace="~{common :: header}"></div>
             <div class="inner_contens">
                 <div class="page_title">書籍一覧</div>
+                <!-- 書籍登録のボタン -->
                 <div class="btn_block">
-                    <div style="text-align: right;">
-                        <form th:action="@{/book/add}" method="get" style="display: inline-block;">
-                            <input type="submit" value="➕📚 書籍登録"
-                                style="padding: 12px 24px; font-size: 16px; background-color: #87f4b4fa;border: 1px solid #87f4b4fa;">
-                        </form>
-                    </div>
+                    <a th:href="@{/book/add}" method="get" class="add-book-form">
+                        <button type="submit" class="add-book-btn">
+                            <img th:src="@{/images/icons/add.png}" alt="追加" class="icon-image">
+                            書籍登録
+                        </button>
+                    </a>
                 </div>
-                    <!-- 書籍一覧のタイトル -->
-                    <div class="table_title">書籍一覧</div>
+                <!-- 書籍一覧のタイトル -->
+                <div class="table_title">書籍一覧</div>
 
                 <table class="book_table" border="1" style="margin-left: 80px;">
                     <thead>
                         <tr>
                             <th>書籍名</th>
                             <th>ISBN</th>
+                            <th>利用可能在庫数</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr th:each="book : ${bookMstList}">
                             <td>
+                                <!-- 編集ボタン -->
+                                <a th:href="@{/book/edit/{id}(id=${book.id})}" class="icon-button">
+                                    <img th:src="@{/images/icons/edit.png}" alt="編集" class="icon-button">
+                                </a>
+                                <!-- 削除ボタン -->
+                                <a th:href="@{/book/delete/{id}(id=${book.id})}" class="icon-button"
+                                    onclick="return confirm('本当に削除しますか？');">
+                                    <img th:src="@{/images/icons/trash.png}" alt="削除" class="icon-button">
+                                </a>
+
                                 <div class="wrap-title" th:text="${book.title}"></div>
                             </td>
                             <td th:text="${book.isbn}"></td>
+                            </td>
+                            <!-- ここに利用可能在庫数入れるはず -->
+                            <td>
                         </tr>
                     </tbody>
+
+                    <div class="popup" th:if="${deleteMessage}">
+                        <div class="popup-content">
+                            <span class="close-btn" onclick="closePopup()">&times;</span>
+                            <p th:text="${deleteMessage}">書籍はすでに削除されています。</p>
+                        </div>
+                    </div>
+
+                    <div id="customPopup" class="popup" th:if="${errorMessage}">
+                        <div class="popup-content">
+                            <span class="close-btn" onclick="closePopup()">&times;</span>
+                            <p th:text="${errorMessage}"></p>
+                        </div>
+                    </div>
+
+
+                    <!-- 外部JS -->
+                    <script th:src="@{/js/index.js}"></script>
+                    
                 </table>
                 <div th:replace="~{common :: footer}"></div>
             </div>

@@ -1,21 +1,21 @@
 .books_table {
- width: 100%;
- text-align: left;
- border-collapse: collapse;
- border-spacing: 0;
- border-radius:10px;
+  width: 100%;
+  text-align: left;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border-radius: 10px;
 }
 
-.books_table th{
+.books_table th {
   padding: 10px;
-  background: rgba(0,0,0,0.06);
+  background: rgba(0, 0, 0, 0.06);
   padding: 13px;
   border: solid 1px #B9B9B9;
   color: #545454;
   font-size: 18px;
 }
 
-.books_table td{
+.books_table td {
   text-align: left;
   vertical-align: top;
   background: #FFFFFF;
@@ -24,76 +24,170 @@
   font-size: 20px;
 }
 
-.books_table td:nth-child(1){
+.books_table td:nth-child(1) {
   width: 40%;
 }
 
-.books_table td:nth-child(1) .book_title_contents{
+.books_table td:nth-child(1) .book_title_contents {
   display: flex;
   align-items: center;
 }
 
-.books_table td:nth-child(1) .book_title_contents span{
+.books_table td:nth-child(1) .book_title_contents span {
   display: inline-block;
-  margin-left:10px;
+  margin-left: 10px;
 }
 
-.books_table td .stockcount{
+.books_table td .stockcount {
   display: inline-block;
   width: 50px;
   text-align: center;
 }
 
-.books_table td img{
+.books_table td img {
   margin: 8px 2px 0 2px;
   height: auto;
 }
-.books_table td img:hover{
+
+.books_table td img:hover {
   cursor: pointer;
   opacity: 0.6;
 }
-.books_table td .edit_icon{
-  width:23px;
-}
-.books_table td .trash_icon{
-  width:19px;
+
+.books_table td .edit_icon {
+  width: 23px;
 }
 
-.books_table td a{
+.books_table td .trash_icon {
+  width: 19px;
+}
+
+.books_table td a {
   color: #0000EE;
 }
 
+
 .btn_block {
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
   padding-right: 80px;
-  /* 右側に80pxの余白を追加 */
   margin-top: 20px;
-  /*上側の余白*/
+  margin-right: -80px;
   margin-bottom: 30px;
 }
-.book_table th {
-  background-color: #f0f0f0; /* 薄いグレー */
-  padding: 10px;
-  text-align: left; /* 左揃え */
+
+.add-book-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center; /* ←ボタン内のアイコン＋文字を中央揃え */
+  gap: 10px;
+  padding: 14px 28px;
+  font-size: 18px;
+  background-color: #9CF2D3;
+  color: #545454;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
 }
+
+.add-book-btn:hover {
+  opacity: 0.7;
+}
+
+.icon-image {
+  width: 24px;
+  height: 24px;
+}
+
+
+
+
+.book_table th {
+  background-color: #f0f0f0;
+  /* 薄いグレー */
+  padding: 10px;
+  text-align: left;
+  /* 左揃え */
+}
+
 .book_table td {
   padding: 10px;
-  text-align: left; /* 左揃え */
+  text-align: left;
+  /* 左揃え */
 }
 
 /* 折り返し機能 */
 .wrap-title {
-  max-width: 600px;        /* 表示幅の制限（任意） */
-  white-space: normal;     /* 折り返しを許可 */
-  word-break: break-word;  /* 単語の途中でも折り返し */
+  max-width: 600px;
+  /* 表示幅の制限（任意） */
+  white-space: normal;
+  /* 折り返しを許可 */
+  word-break: break-word;
+  /* 単語の途中でも折り返し */
   padding: 5px;
   /* border: 1px solid #ddd;  任意：見た目の補助 */
 }
 
 .table_title {
-  font-size: 20px;        /* フォントサイズ */
-  /* font-weight: bold;      太字 */
-  margin-bottom: 20px;    /* 下にスペース */
-  margin-left: 80px; 
-  color: #B9B9B9;            /* 文字色 */
+  font-size: 20px;
+  /* フォントサイズ */
+  margin-bottom: 20px;
+  /* 下にスペース */
+  margin-left: 80px;
+  color: #B9B9B9;
+  /* 文字色 */
+}
+
+/* ポップアップ */
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* 背景の暗がり */
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: red;
+}
+
+/* 編集ボタン・削除ボタンのCSS */
+.icon-button {
+  border: none;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.icon-image {
+  width: 24px;
+  height: 24px;
 }

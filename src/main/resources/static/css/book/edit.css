@@ -1,0 +1,132 @@
+#book_register_form {
+  font-size: 20px;
+}
+
+#book_register_form p .asterisk {
+  font-size: 14px;
+  margin-left: 5px;
+  margin-top: -5px;
+}
+
+#book_register_form .form_input {
+  display: inline-block;
+  width: 100%;
+  height: 55px;
+  border: 2px solid #D9D9D9;
+  padding: 2px 10px;
+  font-size: 20px;
+}
+
+
+#book_register_form .btn_block {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+}
+
+#submit_btn {
+  width: 80px;
+  height: 45px;
+  font-size: 20px;
+  background-color: #9CF2D3;
+  color: #545454;
+  border-radius: 0.5rem;
+  border: none;
+}
+
+#submit_btn:hover {
+  cursor: pointer;
+  opacity: 0.6;
+}
+
+.required-info {
+  color: red;
+  /* 赤文字 */
+  font-weight: bold;
+}
+
+.back-link {
+  position: absolute;
+  top: 200px;
+  /* ヘッダーの高さ分だけ余白を追加 */
+  right: 40px;
+  /* 右上に配置 */
+}
+
+.form-group {
+  margin-bottom: 20px;
+  /* 各入力項目間の余白 */
+}
+
+label {
+  display: block;
+  /* ラベルをブロック要素として表示 */
+  margin-bottom: 8px;
+  /* ラベルと入力欄の間に少し余白 */
+}
+
+input {
+  width: 100%;
+  /* 入力欄の幅を100%にして、フォームの幅いっぱいに表示 */
+  padding: 8px;
+  /* 入力欄の内部余白 */
+  border: 1px solid #ccc;
+  /* 入力欄の境界線 */
+  font-size: 14px;
+}
+
+.label-error-row {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* ラベルとエラーメッセージの間の余白 */
+}
+
+.inline-error {
+  display: flex;
+  flex-direction: column;
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+  font-size: 16px; /* ← ここで文字サイズを指定 */
+}
+
+/* ポップアップ */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background-color: rgba(0, 0, 0, 0.5);
+  /* 背景の暗がり */
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popup-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  width: 300px;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: red;
+}
