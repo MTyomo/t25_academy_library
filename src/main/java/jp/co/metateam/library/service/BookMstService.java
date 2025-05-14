@@ -72,7 +72,7 @@ public class BookMstService {
     @PostMapping
 
     // バリデーションチェック
-    public boolean checkbook(BookMstDto bookMstDto, Model model) {
+    public boolean checkValidTitle(BookMstDto bookMstDto, Model model) {
         String Title = bookMstDto.getTitle();
         List<String> validationTitleErrors = new ArrayList<String>();
 
@@ -92,7 +92,7 @@ public class BookMstService {
         return false;
     }
 
-    public Boolean checkIsbnEntry(BookMstDto bookMstDto, Model model) {
+    public Boolean checkValidIsbn(BookMstDto bookMstDto, Model model) {
 
         // String getIsbn = bookMstDto.getIsbn();
         // List<String> errIsbnList = new ArrayList<>();
@@ -146,61 +146,6 @@ public class BookMstService {
         dto.setTitle(entity.getTitle());
         dto.setIsbn(entity.getIsbn());
         return dto;
-    }
-
-    // ★書籍IDに基づいて既存の書籍情報を取得する共通メソッド
-    private BookMst getExistingBook(BookMstDto bookMstDto) {
-        return bookMstRepository.findById(bookMstDto.getId())
-                .orElseThrow(() -> new IllegalArgumentException("書籍が見つかりません"));
-    }
-
-    // ★タイトルが変更されたかをチェック
-    public boolean checkTitleChange(BookMstDto bookMstDto) {
-        BookMst existingBook = getExistingBook(bookMstDto);
-        return !Objects.equals(existingBook.getTitle(), bookMstDto.getTitle());
-    }
-    // ★ISBNが変更されたかをチェック
-    public boolean checkIsbnChange(BookMstDto bookMstDto) {
-        BookMst existingBook = getExistingBook(bookMstDto);
-        return !Objects.equals(existingBook.getIsbn(), bookMstDto.getIsbn());
-    }
-    
-    // // ★書籍名やISBNが変更されたかどうかをチェックします
-    // public boolean checkTitleChange(BookMstDto bookMstDto) {
-    //     // IDに基づいて既存の書籍を取得
-    //     BookMst existingBook = bookMstRepository.findById(bookMstDto.getId())
-    //             .orElseThrow(() -> new IllegalArgumentException("書籍が見つかりません"));
-    
-    //     // タイトルが変更されたかを確認
-    //     return !existingBook.getTitle().equals(bookMstDto.getTitle());
-    // }
-    
-    // public boolean checkIsbnChange(BookMstDto bookMstDto) {
-    //     // IDに基づいて既存の書籍を取得
-    //     BookMst existingBook = bookMstRepository.findById(bookMstDto.getId())
-    //             .orElseThrow(() -> new IllegalArgumentException("書籍が見つかりません"));
-    
-    //     // ISBNが変更されたかを確認
-    //     return !existingBook.getIsbn().equals(bookMstDto.getIsbn());
-    // }
-
-    // ★更新処理しまぁ～す
-    public void update(BookMstDto bookMstDto) {
-        // IDがnullであれば例外
-        if (bookMstDto.getId() == null) {
-            throw new IllegalArgumentException("更新対象のIDがありません");
-        }
-
-        // DBから既存データを取得（存在しなければ例外）
-        BookMst bookMst = bookMstRepository.findById(bookMstDto.getId())
-                .orElseThrow(() -> new IllegalArgumentException("指定されたIDの書籍が存在しません"));
-
-        // フィールドを更新
-        bookMst.setTitle(bookMstDto.getTitle());
-        bookMst.setIsbn(bookMstDto.getIsbn());
-
-        // 更新はsave()でOK（内部的にUPDATE文）
-        bookMstRepository.save(bookMst);
     }
 
 }

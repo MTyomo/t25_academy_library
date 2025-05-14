@@ -56,12 +56,12 @@ public class BookController {
         return "book/add";
     }
 
-    // もりりゅー流
+    // もりりゅー流 登録処理
     @PostMapping("/book/add")
     public String createBook(@ModelAttribute("bookMstDto") BookMstDto bookMstDto, BindingResult result, Model model) {
 
-        boolean checkResult = bookMstService.checkbook(bookMstDto, model);
-        boolean checkIsbnResult = bookMstService.checkIsbnEntry(bookMstDto, model);
+        boolean checkResult = bookMstService.checkValidTitle(bookMstDto, model);
+        boolean checkIsbnResult = bookMstService.checkValidIsbn(bookMstDto, model);
 
         // 画面変更します
         if (checkResult || checkIsbnResult) {
@@ -74,10 +74,8 @@ public class BookController {
 
     }
 
-    // 今回からの処理ござ～る
-
+    // 今回変更分
     // 編集画面への遷移
-
     @GetMapping("/book/edit/{id}")
     public String editBook(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
         // IDに基づいて書籍データを取得する
@@ -90,9 +88,8 @@ public class BookController {
         }
 
         // 取得した書籍データを model にセット
-        // model.addAttribute("title", "書籍編集");
         model.addAttribute("bookMstDto", book); // 編集する書籍データを渡す
-        return "book/edit"; // edit.html を表示
+        return "book/edit";
     }
 
     // データを更新させましょう
@@ -103,38 +100,36 @@ public class BookController {
         // 書籍がすでに削除されていないか確認
         BookMstDto existingBook = bookMstService.findById(bookMstDto.getId());
         if (existingBook == null) {
-            // 削除済みのため、一覧にリダイレクトしつつメッセージを渡す
             redirectAttributes.addFlashAttribute("deleteMessage", "書籍はすでに削除されています。");
             return "redirect:/book/index";
         }
 
-        // 書籍名またはISBNが変更されているかチェック
-        boolean isTitleChanged = bookMstService.checkTitleChange(bookMstDto);
-        boolean isIsbnChanged = bookMstService.checkIsbnChange(bookMstDto);
-        // ✅ 変更点がない場合、ポップアップ用のメッセージを渡して編集画面に戻る
-        if (!isTitleChanged && !isIsbnChanged) {
+        // 変更点があるか確認
+        if (bookMstDto.getTitle().equals(existingBook.getTitle())
+                && bookMstDto.getIsbn().equals(existingBook.getIsbn())) {
             model.addAttribute("noChangeMessage", "変更点はありません");
-            // model.addAttribute("bookMstDto", bookMstDto);
             return "book/edit";
         }
 
         // タイトルに変更がある場合のバリデーション
-        if (isTitleChanged) {
-            boolean checkTitleResult = bookMstService.checkbook(bookMstDto, model);
-            if (checkTitleResult) {
-                return "book/edit";
-            }
+        boolean isInvalidTitle = false;
+        if (!bookMstDto.getTitle().equals(existingBook.getTitle())) {
+            isInvalidTitle = bookMstService.checkValidTitle(bookMstDto, model);
         }
         // ISBNに変更がある場合のバリデーション
-        if (isIsbnChanged) {
-            boolean checkIsbnResult = bookMstService.checkIsbnEntry(bookMstDto, model);
-            if (checkIsbnResult) {
+        if (!bookMstDto.getIsbn().equals(existingBook.getIsbn())) {
+            boolean isInvalidIsbn = bookMstService.checkValidIsbn(bookMstDto, model);
+            if (isInvalidIsbn) {
                 return "book/edit";
             }
         }
 
+        if (isInvalidTitle) {
+            return "book/edit";
+        }
+
         // 更新処理を実行
-        bookMstService.update(bookMstDto);
+        bookMstService.save(bookMstDto);
         return "redirect:/book/index"; // 更新成功後のリダイレクト
     }
 
