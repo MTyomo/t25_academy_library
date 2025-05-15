@@ -94,9 +94,6 @@ public class BookMstService {
 
     public Boolean checkValidIsbn(BookMstDto bookMstDto, Model model) {
 
-        // String getIsbn = bookMstDto.getIsbn();
-        // List<String> errIsbnList = new ArrayList<>();
-
         String isbn = bookMstDto.getIsbn();
         List<String> validationIsbnErrors = new ArrayList<String>();
         List<BookMst> bookMst = this.bookMstRepository.selectByIsbn(isbn);
@@ -146,6 +143,21 @@ public class BookMstService {
         dto.setTitle(entity.getTitle());
         dto.setIsbn(entity.getIsbn());
         return dto;
+    }
+
+    // ★更新処理
+    public void update(BookMstDto bookMstDto) {
+        
+        // DBから既存データを取得（存在しなければ例外）
+        BookMst bookMst = bookMstRepository.findById(bookMstDto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("指定されたIDの書籍が存在しません"));
+
+        // フィールドを更新
+        bookMst.setTitle(bookMstDto.getTitle());
+        bookMst.setIsbn(bookMstDto.getIsbn());
+
+        // 更新はsave()でOK（内部的にUPDATE文）
+        bookMstRepository.save(bookMst);
     }
 
 }

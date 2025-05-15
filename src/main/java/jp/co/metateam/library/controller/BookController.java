@@ -129,7 +129,7 @@ public class BookController {
         }
 
         // 更新処理を実行
-        bookMstService.save(bookMstDto);
+        bookMstService.update(bookMstDto);
         return "redirect:/book/index"; // 更新成功後のリダイレクト
     }
 
