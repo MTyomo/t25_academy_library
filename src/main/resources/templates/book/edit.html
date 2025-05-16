@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{common :: meta_header('書籍編集',~{::link},~{::script})}">
+    <title th:text="${title}+' | MTLibrary'"></title>
+    <link rel="stylesheet" th:href="@{/css/book/edit.css}" />
+    <script type="text/javascript" th:src="@{/js/book/edit.js}"></script>
+</head>
+
+<body>
+    <div class="contents">
+        <div th:replace="~{common :: main_sidebar}"></div>
+        <div class="main_contents">
+            <div th:replace="~{common :: header}"></div>
+            <div class="inner_contens">
+                <div class="page_title">書籍編集</div>
+                <div class="page_contents">
+                    <td><span class="required-info">＊は必須項目です</span></td>
+                    <div class="mb30 flexarea">
+                        <span class="back-link">
+                            <a th:href="@{/book/index}" class="link">← 一覧へ戻る</a>
+                        </span>
+                    </div>
+                    <form id="book_register_form" th:object="${bookMstDto}" th:action="@{/book/edit}" method="post">
+                        <input type="hidden" th:field="*{id}" th:name="${_csrf.parameterName}"
+                            th:value="${_csrf.token}" />
+
+                        <!-- 書籍名 -->
+                        <div class="form-group">
+                            <div class="label-error-row">
+                                <label for="title">書籍名<span class="required-info">*</span></label>
+                                <div class="inline-error" th:if="${titleErrors}">
+                                    <span th:each="error : ${titleErrors}" th:text="${error}"
+                                        class="error-message"></span>
+                                </div>
+                            </div>
+                            <input type="text" id="title" placeholder="書籍名を入力" th:field="*{title}"
+                                th:attr="data-original-title=${bookMstDto.title}" />
+
+                        </div>
+
+                        <!-- ISBN -->
+                        <div class="form-group">
+                            <div class="label-error-row">
+                                <label for="isbn">ISBN<span class="required-info">*</span></label>
+                                <div class="inline-error" th:if="${isbnErrors}">
+                                    <span th:each="error : ${isbnErrors}" th:text="${error}"
+                                        class="error-message"></span>
+                                </div>
+                            </div>
+                            <input type="text" id="isbn" placeholder="ISBNを入力" th:field="*{isbn}"
+                                th:attr="data-original-isbn=${bookMstDto.isbn}" />
+                        </div>
+
+                        <!-- 更新ボタン -->
+                        <div class="btn_block">
+                            <button type="submit" id="submit_btn">更新</button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{common :: footer}"></div>
+</body>
+
+<!-- ポップアップ -->
+<div class="popup" th:if="${noChangeMessage}">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closePopup()">&times;</span>
+    <p th:text="${noChangeMessage}"></p>
+  </div>
+</div>
+
+<script th:src="@{/js/edit.js}"></script>

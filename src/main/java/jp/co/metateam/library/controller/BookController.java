@@ -8,12 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
@@ -62,16 +56,15 @@ public class BookController {
         return "book/add";
     }
 
-
-    // もりりゅー流
+    // もりりゅー流 登録処理
     @PostMapping("/book/add")
     public String createBook(@ModelAttribute("bookMstDto") BookMstDto bookMstDto, BindingResult result, Model model) {
 
-        boolean checkResult = bookMstService.checkbook(bookMstDto, model);
-        boolean checkIsbnResult = bookMstService.checkIsbnEntry(bookMstDto, model);
+        boolean checkResult = bookMstService.checkValidTitle(bookMstDto, model);
+        boolean checkIsbnResult = bookMstService.checkValidIsbn(bookMstDto, model);
 
         // 画面変更します
-        if (checkResult||checkIsbnResult) {
+        if (checkResult || checkIsbnResult) {
             return "book/add"; // バリデーションエラー時、登録画面に戻す
         }
 
@@ -81,5 +74,63 @@ public class BookController {
 
     }
 
+    // 今回変更分
+    // 編集画面への遷移
+    @GetMapping("/book/edit/{id}")
+    public String editBook(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
+        // IDに基づいて書籍データを取得する
+        BookMstDto book = bookMstService.findById(id);
+
+        if (book == null) {
+            // 削除されている → 一覧画面にリダイレクトし、警告メッセージを渡す
+            redirectAttributes.addFlashAttribute("errorMessage", "指定された書籍はすでに削除されています。");
+            return "redirect:/book/index";
+        }
+
+        // 取得した書籍データを model にセット
+        model.addAttribute("bookMstDto", book); // 編集する書籍データを渡す
+        return "book/edit";
+    }
+
+    // データを更新させましょう
+    @PostMapping("/book/edit")
+    public String editBook(@ModelAttribute("bookMstDto") BookMstDto bookMstDto, BindingResult result, Model model,
+            RedirectAttributes redirectAttributes) {
+
+        // 書籍がすでに削除されていないか確認
+        BookMstDto existingBook = bookMstService.findById(bookMstDto.getId());
+        if (existingBook == null) {
+            redirectAttributes.addFlashAttribute("deleteMessage", "書籍はすでに削除されています。");
+            return "redirect:/book/index";
+        }
+
+        // 変更点があるか確認
+        if (bookMstDto.getTitle().equals(existingBook.getTitle())
+                && bookMstDto.getIsbn().equals(existingBook.getIsbn())) {
+            model.addAttribute("noChangeMessage", "変更点はありません");
+            return "book/edit";
+        }
+
+        // タイトルに変更がある場合のバリデーション
+        boolean isInvalidTitle = false;
+        if (!bookMstDto.getTitle().equals(existingBook.getTitle())) {
+            isInvalidTitle = bookMstService.checkValidTitle(bookMstDto, model);
+        }
+        // ISBNに変更がある場合のバリデーション
+        if (!bookMstDto.getIsbn().equals(existingBook.getIsbn())) {
+            boolean isInvalidIsbn = bookMstService.checkValidIsbn(bookMstDto, model);
+            if (isInvalidIsbn) {
+                return "book/edit";
+            }
+        }
+
+        if (isInvalidTitle) {
+            return "book/edit";
+        }
+
+        // 更新処理を実行
+        bookMstService.update(bookMstDto);
+        return "redirect:/book/index"; // 更新成功後のリダイレクト
+    }
 
 }
