@@ -26,4 +26,6 @@ public class BookMstDto {
     private Timestamp deletedAt;
 
     private BookMst bookMst;
+
+    private Boolean deletedFlag;
 }

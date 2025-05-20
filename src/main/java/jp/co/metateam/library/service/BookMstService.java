@@ -1,5 +1,6 @@
 package jp.co.metateam.library.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.google.protobuf.TimestampProto;
+
 import io.micrometer.common.util.StringUtils;
 import jp.co.metateam.library.model.Account;
 import jp.co.metateam.library.model.AccountDto;
@@ -20,6 +23,10 @@ import jp.co.metateam.library.model.BookMstDto;
 import jp.co.metateam.library.repository.BookMstRepository;
 
 import java.util.Objects;
+
+// インポート追加
+import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Service
 public class BookMstService {
@@ -127,8 +134,7 @@ public class BookMstService {
         return false;
     }
 
-    // 今回変更分
-
+    // IDから書籍データを取得
     @Autowired
     private BookMstRepository bookRepository;
 
@@ -147,7 +153,7 @@ public class BookMstService {
 
     // ★更新処理
     public void update(BookMstDto bookMstDto) {
-        
+
         // DBから既存データを取得（存在しなければ例外）
         BookMst bookMst = bookMstRepository.findById(bookMstDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("指定されたIDの書籍が存在しません"));
@@ -155,9 +161,39 @@ public class BookMstService {
         // フィールドを更新
         bookMst.setTitle(bookMstDto.getTitle());
         bookMst.setIsbn(bookMstDto.getIsbn());
+        // bookMst.setDeletedFlag(bookMstDto.getDeletedFlag());
 
         // 更新はsave()でOK（内部的にUPDATE文）
         bookMstRepository.save(bookMst);
+    }
+
+    // 今回変更分
+    // ★論理削除
+    // public void deleteBook(Long id) {
+    // BookMst bookToDelete = bookRepository.findById(id).orElseThrow();
+    // bookToDelete.setDeletedFlag(true);
+    // // 削除日時更新
+    // LocalDateTime now = LocalDateTime.now();
+    // Timestamp ts = Timestamp.valueOf(now);
+    // bookToDelete.setDeletedAt(ts); // ← java.sql.Timestamp 型の setDeletedAt を呼ぶ
+    // bookRepository.save(bookToDelete);
+    // }
+
+    // public List<BookMst> getAllActiveBooks() {
+    // return bookRepository.findActiveBooks();
+    // }
+
+    public void deleteBook(Long id) {
+        BookMst bookToDelete = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("書籍が見つかりません"));
+
+        if (bookToDelete.isDeletedFlag()) {
+            throw new IllegalStateException("この書籍はすでに削除されています");
+        }
+
+        bookToDelete.setDeletedFlag(true);
+        bookToDelete.setDeletedAt(Timestamp.valueOf(LocalDateTime.now()));
+        bookRepository.save(bookToDelete);
     }
 
 }

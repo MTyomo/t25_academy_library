@@ -42,10 +42,12 @@
                                     <img th:src="@{/images/icons/edit.png}" alt="編集" class="icon-button">
                                 </a>
                                 <!-- 削除ボタン -->
-                                <a th:href="@{/book/delete/{id}(id=${book.id})}" class="icon-button"
-                                    onclick="return confirm('本当に削除しますか？');">
-                                    <img th:src="@{/images/icons/trash.png}" alt="削除" class="icon-button">
-                                </a>
+                                <button type="button" th:data-id="${book.id}" th:data-title="${book.title}"
+                                    th:data-isbn="${book.isbn}"
+                                    onclick="openDeletePopup(this.dataset.id, this.dataset.title, this.dataset.isbn)">
+                                    <img th:src="@{/images/icons/trash.png}" alt="削除アイコン" class="icon-button">
+                                </button>
+
 
                                 <div class="wrap-title" th:text="${book.title}"></div>
                             </td>
@@ -55,11 +57,11 @@
                             <td>
                         </tr>
                     </tbody>
-
-                    <div class="popup" th:if="${deleteMessage}">
-                        <div class="popup-content">
+                    <!-- 編集機能ポップアップ -->
+                    <div class="popup" th:if="${popupMessage}">
+                        <div id="customPopup" class="popup-content">
                             <span class="close-btn" onclick="closePopup()">&times;</span>
-                            <p th:text="${deleteMessage}">書籍はすでに削除されています。</p>
+                            <p th:text="${popupMessage}"></p>
                         </div>
                     </div>
 
@@ -70,9 +72,37 @@
                         </div>
                     </div>
 
-                    <!-- 外部JS -->
-                    <script th:src="@{/js/index.js}"></script>
-                    
+                
+
+                    <!-- 削除確認ポップアップ -->
+                    <div id="deleteConfirmPopup" class="popup" style="display:none;">
+                        <div class="popup-content">
+                            <p>本当に削除しますか？</p>
+                            <!-- <p th:text="${bookId}"></p> -->
+                            <span class="close-btn" onclick="closePopup()">&times;</span>
+                            <p><span id="bookTitle"></span></p>
+                            <p><span id="bookIsbn"></span></p>
+                            <button onclick="closePopup()">キャンセル</button>
+                            
+                            <button type="button" 
+                            onclick="deleteBook(deleteTargetId)">削除</button>
+                        </div>
+                    </div>
+
+                    <!-- 削除完了ポップアップ -->
+                    <div id="deleteSuccessPopup" class="popup" style="display:none;">
+                        <div class="popup-content">
+                            <p>削除が完了しました！</p>
+                        </div>
+                    </div>
+
+
+                    <!-- 外部JS
+                    <script th:src="@{/js/index.js}"></script> -->
+                    <!-- OKな例 -->
+                    <!-- <script type="text/javascript" th:src="@{/js/book/index.js}"></script> -->
+
+
                 </table>
                 <div th:replace="~{common :: footer}"></div>
             </div>

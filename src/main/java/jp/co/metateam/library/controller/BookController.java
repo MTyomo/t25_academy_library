@@ -1,9 +1,14 @@
 package jp.co.metateam.library.controller;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +20,7 @@ import jp.co.metateam.library.model.Account;
 import jp.co.metateam.library.model.AccountDto;
 import jp.co.metateam.library.model.BookMst;
 import jp.co.metateam.library.model.BookMstDto;
+import jp.co.metateam.library.repository.BookMstRepository;
 import jp.co.metateam.library.service.BookMstService;
 import lombok.extern.log4j.Log4j2;
 
@@ -74,7 +80,6 @@ public class BookController {
 
     }
 
-    // 今回変更分
     // 編集画面への遷移
     @GetMapping("/book/edit/{id}")
     public String editBook(@PathVariable("id") Long id, Model model, RedirectAttributes redirectAttributes) {
@@ -83,7 +88,7 @@ public class BookController {
 
         if (book == null) {
             // 削除されている → 一覧画面にリダイレクトし、警告メッセージを渡す
-            redirectAttributes.addFlashAttribute("errorMessage", "指定された書籍はすでに削除されています。");
+            redirectAttributes.addFlashAttribute("popupMessage", "指定された書籍はすでに削除されています。");
             return "redirect:/book/index";
         }
 
@@ -100,7 +105,7 @@ public class BookController {
         // 書籍がすでに削除されていないか確認
         BookMstDto existingBook = bookMstService.findById(bookMstDto.getId());
         if (existingBook == null) {
-            redirectAttributes.addFlashAttribute("deleteMessage", "書籍はすでに削除されています。");
+            redirectAttributes.addFlashAttribute("popupMessage", "指定された書籍はすでに削除されています。");
             return "redirect:/book/index";
         }
 
@@ -131,6 +136,42 @@ public class BookController {
         // 更新処理を実行
         bookMstService.update(bookMstDto);
         return "redirect:/book/index"; // 更新成功後のリダイレクト
+    }
+
+    // 今回変更分
+
+    // @GetMapping("book/delete/{id}")
+    // @ResponseBody
+    // public ResponseEntity<String> deleteBook(@PathVariable Long id) {
+
+    // try {
+    // bookMstService.deleteBook(id);
+    // return ResponseEntity.ok("削除が完了しました");
+    // // すでに削除されている書籍を削除しようとした場合など、状態に問題があるときのエラー
+    // } catch (IllegalStateException e) {
+    // return ResponseEntity.status(400).body(e.getMessage());
+    // // 指定されたIDの書籍が存在しない場合
+    // } catch (RuntimeException e) {
+    // return ResponseEntity.status(404).body(e.getMessage());
+    // } catch (Exception e) {
+    // return ResponseEntity.status(500).body("予期しないエラーが発生しました");
+    // }
+    // }
+
+    @GetMapping("book/delete/{id}")
+    // @ResponseBody
+    public String deleteBook(@PathVariable Long id,RedirectAttributes redirectAttributes) {
+        try {
+            bookMstService.deleteBook(id);
+            redirectAttributes.addFlashAttribute("popupMessage", "削除が完了しました");
+            return "redirect:/book/index"; 
+        } catch (IllegalStateException e) {
+            return e.getMessage(); // すでに削除済みなど
+        } catch (RuntimeException e) {
+            return e.getMessage(); // 書籍が存在しないなど
+        } catch (Exception e) {
+            return "予期しないエラーが発生しました。";
+        }
     }
 
 }
