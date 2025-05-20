@@ -76,7 +76,7 @@ public class BookMst {
     @Column(name = "deleted_flag", nullable = false)
     private boolean deletedFlag;/* = false;*/ 
 
-    public boolean isDeletedFlag() {
+    public boolean getDeletedFlag() {
         return deletedFlag;
     }
 

@@ -1,6 +1,8 @@
 package jp.co.metateam.library.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -135,11 +137,11 @@ public class BookMstService {
     }
 
     // IDから書籍データを取得
-    @Autowired
-    private BookMstRepository bookRepository;
+    // @Autowired
+    // private BookMstRepository bookMstRepository;
 
     public BookMstDto findById(Long id) {
-        BookMst entity = bookRepository.findById(id).orElse(null);
+        BookMst entity = bookMstRepository.findById(id).orElse(null);
         if (entity == null) {
             return null;
         }
@@ -148,6 +150,8 @@ public class BookMstService {
         dto.setId(entity.getId());
         dto.setTitle(entity.getTitle());
         dto.setIsbn(entity.getIsbn());
+        dto.setDeletedFlag(entity.getDeletedFlag());
+
         return dto;
     }
 
@@ -183,17 +187,30 @@ public class BookMstService {
     // return bookRepository.findActiveBooks();
     // }
 
-    public void deleteBook(Long id) {
-        BookMst bookToDelete = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("書籍が見つかりません"));
+    public void deleteBook(BookMstDto existingBook,RedirectAttributes redirectAttributes) {
+        
+    // BookMstDto bookToDelete = findById(id);
+     BookMst entity = new BookMst();
+        entity.setId(existingBook.getId());
+        entity.setTitle(existingBook.getTitle());
+        entity.setIsbn(existingBook.getIsbn());
+        entity.setDeletedFlag(true);
+        entity.setDeletedAt(Timestamp.valueOf(LocalDateTime.now()));
 
-        if (bookToDelete.isDeletedFlag()) {
-            throw new IllegalStateException("この書籍はすでに削除されています");
-        }
-
-        bookToDelete.setDeletedFlag(true);
-        bookToDelete.setDeletedAt(Timestamp.valueOf(LocalDateTime.now()));
-        bookRepository.save(bookToDelete);
+    
+    bookMstRepository.save(entity);
     }
+
+    
+    // 論理削除処理
+    // public void logicalDelete(Long id) {
+    //     BookMst book = bookMstRepository.selectById(id).orElse(null);
+    //     if (book != null && !book.getDeletedFlag()) {
+    //         book.setDeletedFlag(true);// フラグを１にする
+    //         Timestamp jstTimestamp = Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Asia/Tokyo")).toLocalDateTime());
+    //         book.setDeletedAt(jstTimestamp);
+    //         bookMstRepository.save(book);
+    //     }
+    // }
 
 }

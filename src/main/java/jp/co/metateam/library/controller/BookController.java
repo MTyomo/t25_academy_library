@@ -140,38 +140,46 @@ public class BookController {
 
     // 今回変更分
 
-    // @GetMapping("book/delete/{id}")
-    // @ResponseBody
-    // public ResponseEntity<String> deleteBook(@PathVariable Long id) {
-
-    // try {
-    // bookMstService.deleteBook(id);
-    // return ResponseEntity.ok("削除が完了しました");
-    // // すでに削除されている書籍を削除しようとした場合など、状態に問題があるときのエラー
-    // } catch (IllegalStateException e) {
-    // return ResponseEntity.status(400).body(e.getMessage());
-    // // 指定されたIDの書籍が存在しない場合
-    // } catch (RuntimeException e) {
-    // return ResponseEntity.status(404).body(e.getMessage());
-    // } catch (Exception e) {
-    // return ResponseEntity.status(500).body("予期しないエラーが発生しました");
-    // }
-    // }
-
     @GetMapping("book/delete/{id}")
     // @ResponseBody
-    public String deleteBook(@PathVariable Long id,RedirectAttributes redirectAttributes) {
+    public String deleteBook(@PathVariable Long id, RedirectAttributes redirectAttributes) {
         try {
-            bookMstService.deleteBook(id);
+            //ｉｄに紐づく書籍データ取得
+            BookMstDto existingBook = bookMstService.findById(id);
+
+            //書籍データの存在チェック
+            if (existingBook == null) {
+                redirectAttributes.addFlashAttribute("popupMessage", "指定された書籍はすでに削除されています。");
+                return "redirect:/book/index";
+            }
+            //書籍が既に論理削除済みではないかチェック
+            if (existingBook.getDeletedFlag()) {
+                redirectAttributes.addFlashAttribute("popupMessage", "削除済みです");
+                return "redirect:/book/index";
+            }
+
+            //削除処理
+            bookMstService.deleteBook(existingBook, redirectAttributes);
             redirectAttributes.addFlashAttribute("popupMessage", "削除が完了しました");
-            return "redirect:/book/index"; 
-        } catch (IllegalStateException e) {
-            return e.getMessage(); // すでに削除済みなど
-        } catch (RuntimeException e) {
-            return e.getMessage(); // 書籍が存在しないなど
+            return "redirect:/book/index";
         } catch (Exception e) {
             return "予期しないエラーが発生しました。";
         }
     }
+
+    // @GetMapping("/book/delete/{id}")
+    // public String deleteBook(@PathVariable("id") Long id, RedirectAttributes
+    // redirectAttributes) {
+    // BookMst deletebook = bookMstService.selectById(id);
+    // // BookMst deletebook = bookMstRepository.findById(id);
+
+    // if (deletebook == null || deletebook.getDeletedFlag()) {
+    // redirectAttributes.addFlashAttribute("popupMessage", "指定された書籍は存在しません");
+    // } else {
+    // bookMstService.logicalDelete(id);
+    // redirectAttributes.addFlashAttribute("popupMessage", "書籍データを削除しました");
+    // }
+    // return "redirect:/book/index";
+    // }
 
 }
