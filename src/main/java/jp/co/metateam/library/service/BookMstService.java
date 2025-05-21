@@ -195,7 +195,9 @@ public class BookMstService {
         entity.setTitle(existingBook.getTitle());
         entity.setIsbn(existingBook.getIsbn());
         entity.setDeletedFlag(true);
-        entity.setDeletedAt(Timestamp.valueOf(LocalDateTime.now()));
+        //entity.setDeletedAt(Timestamp.valueOf(LocalDateTime.now()));
+        Timestamp jstTimestamp = Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Asia/Tokyo")).toLocalDateTime());
+        entity.setDeletedAt(jstTimestamp);
 
     
     bookMstRepository.save(entity);
