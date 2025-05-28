@@ -1,5 +1,8 @@
 package jp.co.metateam.library.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.google.protobuf.TimestampProto;
+
 import io.micrometer.common.util.StringUtils;
 import jp.co.metateam.library.model.Account;
 import jp.co.metateam.library.model.AccountDto;
@@ -20,6 +25,10 @@ import jp.co.metateam.library.model.BookMstDto;
 import jp.co.metateam.library.repository.BookMstRepository;
 
 import java.util.Objects;
+
+// インポート追加
+import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Service
 public class BookMstService {
@@ -127,13 +136,12 @@ public class BookMstService {
         return false;
     }
 
-    // 今回変更分
-
-    @Autowired
-    private BookMstRepository bookRepository;
+    // IDから書籍データを取得
+    // @Autowired
+    // private BookMstRepository bookMstRepository;
 
     public BookMstDto findById(Long id) {
-        BookMst entity = bookRepository.findById(id).orElse(null);
+        BookMst entity = bookMstRepository.findById(id).orElse(null);
         if (entity == null) {
             return null;
         }
@@ -142,12 +150,14 @@ public class BookMstService {
         dto.setId(entity.getId());
         dto.setTitle(entity.getTitle());
         dto.setIsbn(entity.getIsbn());
+        dto.setDeletedFlag(entity.getDeletedFlag());
+
         return dto;
     }
 
     // ★更新処理
     public void update(BookMstDto bookMstDto) {
-        
+
         // DBから既存データを取得（存在しなければ例外）
         BookMst bookMst = bookMstRepository.findById(bookMstDto.getId())
                 .orElseThrow(() -> new IllegalArgumentException("指定されたIDの書籍が存在しません"));
@@ -155,9 +165,54 @@ public class BookMstService {
         // フィールドを更新
         bookMst.setTitle(bookMstDto.getTitle());
         bookMst.setIsbn(bookMstDto.getIsbn());
+        // bookMst.setDeletedFlag(bookMstDto.getDeletedFlag());
 
         // 更新はsave()でOK（内部的にUPDATE文）
         bookMstRepository.save(bookMst);
     }
+
+    // 今回変更分
+    // ★論理削除
+    // public void deleteBook(Long id) {
+    // BookMst bookToDelete = bookRepository.findById(id).orElseThrow();
+    // bookToDelete.setDeletedFlag(true);
+    // // 削除日時更新
+    // LocalDateTime now = LocalDateTime.now();
+    // Timestamp ts = Timestamp.valueOf(now);
+    // bookToDelete.setDeletedAt(ts); // ← java.sql.Timestamp 型の setDeletedAt を呼ぶ
+    // bookRepository.save(bookToDelete);
+    // }
+
+    // public List<BookMst> getAllActiveBooks() {
+    // return bookRepository.findActiveBooks();
+    // }
+
+    public void deleteBook(BookMstDto existingBook,RedirectAttributes redirectAttributes) {
+        
+    // BookMstDto bookToDelete = findById(id);
+     BookMst entity = new BookMst();
+        entity.setId(existingBook.getId());
+        entity.setTitle(existingBook.getTitle());
+        entity.setIsbn(existingBook.getIsbn());
+        entity.setDeletedFlag(true);
+        //entity.setDeletedAt(Timestamp.valueOf(LocalDateTime.now()));
+        Timestamp jstTimestamp = Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Asia/Tokyo")).toLocalDateTime());
+        entity.setDeletedAt(jstTimestamp);
+
+    
+    bookMstRepository.save(entity);
+    }
+
+    
+    // 論理削除処理
+    // public void logicalDelete(Long id) {
+    //     BookMst book = bookMstRepository.selectById(id).orElse(null);
+    //     if (book != null && !book.getDeletedFlag()) {
+    //         book.setDeletedFlag(true);// フラグを１にする
+    //         Timestamp jstTimestamp = Timestamp.valueOf(ZonedDateTime.now(ZoneId.of("Asia/Tokyo")).toLocalDateTime());
+    //         book.setDeletedAt(jstTimestamp);
+    //         bookMstRepository.save(book);
+    //     }
+    // }
 
 }

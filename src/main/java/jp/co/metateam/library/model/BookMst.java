@@ -70,4 +70,18 @@ public class BookMst {
     public void setDeletedAt(Timestamp deletedAt) {
         this.deletedAt = deletedAt;
     }
+
+    // 今回変更分
+    /** 削除フラグ */
+    @Column(name = "deleted_flag", nullable = false)
+    private boolean deletedFlag;/* = false;*/ 
+
+    public boolean getDeletedFlag() {
+        return deletedFlag;
+    }
+
+    public void setDeletedFlag(boolean deletedFlag) {
+        this.deletedFlag = deletedFlag;
+    }
+
 }
